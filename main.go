@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/jondatkins/blog_aggregator/internal/config"
@@ -15,36 +16,39 @@ type state struct {
 	cfg *config.Config
 }
 
-func (c *commands) register(name string, f func(*state, command) error) {
-	c.cmds[name] = f
-}
-
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		panic(err)
+		log.Fatalf("error reading config: %v", err)
 	}
-	st := &state{
+
+	db, err := sql.Open("postgres", cfg.DBURL)
+	if err != nil {
+		log.Fatalf("error connecting to db: %v", err)
+	}
+	defer db.Close()
+	dbQueries := database.New(db)
+
+	programState := &state{
+		db:  dbQueries,
 		cfg: &cfg,
 	}
-	_ = st
 
-	dbURL := cfg.DBURL
-	db, err := sql.Open("postgres", dbURL)
-	dbQueries := database.New(db)
-	st.db = dbQueries
 	cmds := &commands{
-		cmds: make(map[string]func(*state, command) error),
+		registeredCommands: make(map[string]func(*state, command) error),
 	}
-	_ = cmds
 
 	cmds.register("login", handlerLogin)
 	cmds.register("register", handlerRegister)
-	commandName := getArgs()[0]
-	argsSlice := getArgs()[1:]
-	err = cmds.run(st, command{name: commandName, args: argsSlice})
+
+	if len(os.Args) < 2 {
+		log.Fatal("Usage: cli <command> [args...]")
+	}
+	commandName := os.Args[1]
+	commandArgs := os.Args[2:]
+	err = cmds.run(programState, command{Name: commandName, Args: commandArgs})
 	if err != nil {
-		fmt.Println("err is ", err)
+		log.Fatal(err)
 	}
 }
 

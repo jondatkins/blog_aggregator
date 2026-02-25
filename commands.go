@@ -3,8 +3,8 @@ package main
 import "errors"
 
 type command struct {
-	name string
-	args []string
+	Name string
+	Args []string
 }
 
 type commands struct {
@@ -16,7 +16,7 @@ func (c *commands) register(name string, f func(*state, command) error) {
 }
 
 func (c *commands) run(s *state, cmd command) error {
-	handler, ok := c.registeredCommands[cmd.name]
+	handler, ok := c.registeredCommands[cmd.Name]
 	if !ok {
 		// return fmt.Errorf("unknown command: %s", cmd.name)
 		return errors.New("command not found")
