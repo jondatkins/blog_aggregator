@@ -45,6 +45,8 @@ func main() {
 	cmds.register("agg", handlerAgg)
 	cmds.register("addfeed", handlerAddFeed)
 	cmds.register("feeds", handlerGetFeeds)
+	cmds.register("follow", handlerFollow)
+	cmds.register("following", handlerFollowing)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
@@ -63,5 +65,4 @@ func getArgs() []string {
 		os.Exit(1)
 	}
 	return os.Args[1:] // os.Args[0] is the program name
-	// return os.Args
 }

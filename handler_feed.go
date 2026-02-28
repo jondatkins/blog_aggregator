@@ -9,6 +9,7 @@ import (
 	"github.com/jondatkins/blog_aggregator/internal/database"
 )
 
+// Enhance the addfeed command. It should now automatically create a feed follow record for the current user when they add a feed.
 func handlerAddFeed(s *state, cmd command) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("usage: %v <Feed Name> <Feed URL>", cmd.Name)
@@ -32,6 +33,8 @@ func handlerAddFeed(s *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("couldn't create feed: %w", err)
 	}
+
+	handlerFollow(s, command{Name: "following", Args: []string{feed.Url}})
 
 	fmt.Println("Feed created")
 	printFeed(feed)
