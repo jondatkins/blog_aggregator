@@ -9,11 +9,11 @@ import (
 	"github.com/jondatkins/blog_aggregator/internal/database"
 )
 
-func handlerFollow(s *state, cmd command) error {
-	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
+func handlerFollow(s *state, cmd command, user database.User) error {
+	// user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+	// if err != nil {
+	// 	return err
+	// }
 
 	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <feed_url>", cmd.Name)
@@ -40,7 +40,7 @@ func handlerFollow(s *state, cmd command) error {
 	return nil
 }
 
-func handlerListFeedFollows(s *state, cmd command) error {
+func handlerListFeedFollows(s *state, cmd command, user database.User) error {
 	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
 	if err != nil {
 		return err
