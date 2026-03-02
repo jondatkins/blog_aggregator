@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jondatkins/blog_aggregator/internal/database"
+	"github.com/lib/pq"
 )
 
 // Write an aggregation function, I called mine scrapeFeeds. It should:
@@ -30,9 +32,24 @@ func scrapeFeeds(s *state) error {
 	if err != nil {
 		return err
 	}
-	for _, foo := range feed.Channel.Item {
-		fmt.Println(foo.Title)
-		fmt.Println("=====================================")
+
+	for _, rssItem := range feed.Channel.Item {
+		publishedAt, _ := time.Parse(time.RFC1123Z, rssItem.PubDate)
+		_, err := s.db.CreatePost(context.Background(), database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now().UTC(),
+			UpdatedAt:   time.Now().UTC(),
+			Title:       rssItem.Title,
+			Url:         rssItem.Link,
+			Description: sql.NullString{String: rssItem.Description, Valid: rssItem.Description != ""},
+			PublishedAt: sql.NullTime{Time: publishedAt, Valid: publishedAt.Year() > 1},
+			FeedID:      nextFeed.ID,
+		})
+		if err != nil {
+			if pqErr, ok := err.(*pq.Error); ok && pqErr.Code != "23505" {
+				fmt.Printf("Error: %v\n", err)
+			}
+		}
 	}
 	return nil
 }
