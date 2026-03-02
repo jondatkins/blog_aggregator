@@ -1,6 +1,6 @@
 # Blog Aggregator CLI Tool
 
-blog_aggregator / gator is a RSS feed aggregator app for the terminal.
+gator is a RSS feed aggregator app for the terminal.
 
 ## Requirements
 
@@ -33,7 +33,9 @@ blog_aggregator register myUsername
 blog_aggregator login myUsername
 # Add a RSS feed for the current user to follow
 blog_aggregator addfeed "Ycombinator Hacker News RSS" "https://news.ycombinator.com/rss"
+# Follow a feed that another user has added
 blog_aggregator follow "https://hnrss.org/newest"
+# Unfollow a feed
 blog_aggregator unfollow "https://hnrss.org/newest"
 # List all users
 blog_aggregator users
@@ -41,7 +43,6 @@ blog_aggregator users
 blog_aggregator feeds
 # Show all feeds being followed by current user
 blog_aggregator following
-blog_aggregator 
 # quit out of app
 blog_aggregator exit
 
