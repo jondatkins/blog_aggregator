@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jondatkins/blog_aggregator/internal/database"
+	"github.com/jondatkins/gator/internal/database"
 )
 
 func handlerAgg(s *state, cmd command) error {

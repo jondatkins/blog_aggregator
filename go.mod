@@ -1,4 +1,4 @@
-module github.com/jondatkins/blog_aggregator
+module github.com/jondatkins/gator
 
 go 1.25.7
 

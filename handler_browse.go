@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jondatkins/blog_aggregator/internal/database"
+	"github.com/jondatkins/gator/internal/database"
 )
 
 func handlerBrowse(s *state, cmd command, user database.User) error {
